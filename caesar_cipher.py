@@ -13,6 +13,8 @@ def encrypt1(plaintext: str, k: int) -> str:
 
 def encrypt2(plaintext: str, k: int, alphabet: str = "abcdefghijklmnopqrstuvwxyz") -> str:
     """
+    on the hindsight - this is a poor man's substitution cipher!
+
     :param plaintext: non-encrypted plaintext
     :param k: shift in caesar cipher
     :param alphabet: alphabet string for the shift (this allows to change/expand the base text)

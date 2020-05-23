@@ -52,11 +52,11 @@ def my_aes_decrypt(ciphertext, k):
 
 def aes_encrypt(plaintext, k):
     iv = Random.new().read(AES.block_size)  # Block size is 16
-    return iv + AES.new(k, AES.MODE_CBC, iv=iv).encrypt(plaintext)
+    return iv + AES.new(k, AES.MODE_CBC, iv).encrypt(plaintext)
 
 
 def aes_decrypt(ciphertext, k):
-    return AES.new(k, AES.MODE_CBC, iv=ciphertext[:16]).decrypt(ciphertext[16:]).decode("latin1")
+    return AES.new(k, AES.MODE_CBC, ciphertext[:16]).decrypt(ciphertext[16:]).decode("latin1")
 
 
 def brute_force_aes(ciphertext):
@@ -115,13 +115,8 @@ def get_top_three_alphabets(letters):
 
     return []
 
-
 def check_compatibility_in_english(list1, set1):
     if list1 is None or len(list1) == 0:
         return False
 
-    for l in list1:
-        if l not in set1:
-            return False
-
-    return True
+    return len(set(list1).intersection(set1)) > 0

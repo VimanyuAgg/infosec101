@@ -11,8 +11,10 @@
 
 from Crypto.Cipher import AES
 from Crypto import Random
+from collections import Counter
 
 BLOCK_SIZE = 16
+
 
 def xor_three(m1, m2, k):
     print(f"xoring: {m1} and {m2}")
@@ -51,36 +53,17 @@ def my_aes_decrypt(ciphertext, k):
 
 
 def aes_encrypt(plaintext, k):
+    print(len(plaintext))
+    deviation_from_block_size = len(plaintext) % AES.block_size
+    print("padding needed: {}".format(deviation_from_block_size))
+    plaintext = plaintext + bytes(' '*(AES.block_size - deviation_from_block_size), 'utf-8')
+    print(len(plaintext))
     iv = Random.new().read(AES.block_size)  # Block size is 16
     return iv + AES.new(k, AES.MODE_CBC, iv).encrypt(plaintext)
 
 
 def aes_decrypt(ciphertext, k):
     return AES.new(k, AES.MODE_CBC, ciphertext[:16]).decrypt(ciphertext[16:]).decode("latin1")
-
-
-def brute_force_aes(ciphertext):
-    k1 = b'036'
-    k2 = b'000000'
-    k3 = b'0000000'
-    candidates = []
-    for i in range(1000000):
-        k = k1 + k2 + k3
-
-        candidate = aes_decrypt(ciphertext, k)
-
-    pass  # return plaintext (in 'latin1', from aes_decrypt()), k
-
-k = b'1234567890123456'
-
-cipher = aes_encrypt(b'qwertyuiop123456', k)
-print(f"cipher: {cipher}")
-m = aes_decrypt(cipher, k)
-print(f"m: {m}")
-
-
-
-from collections import Counter
 
 
 def is_ascii(s):
@@ -115,8 +98,43 @@ def get_top_three_alphabets(letters):
 
     return []
 
+
 def check_compatibility_in_english(list1, set1):
     if list1 is None or len(list1) == 0:
         return False
 
     return len(set(list1).intersection(set1)) > 0
+
+
+def brute_force_aes(ciphertext):
+    k1 = b'036'
+    k2 = b'000000'
+    k3 = b'0000000'
+    for i in range(1000000):
+        k = bytes(str(int(k2) + i).zfill(6), 'utf-8')
+        candidate_key = k1 + k + k3
+        print(f'Trying with key:{candidate_key}')
+        candidate = aes_decrypt(ciphertext, candidate_key)
+        print(f'Candidate with i:{i} - {candidate}')
+        if is_english(candidate):
+            print("**Looks like English!**")
+            return candidate
+
+    return "No Answer Found!"
+
+k = b'0360056220000000'
+
+# cipher = aes_encrypt(b'this is a normal english sentence', k)
+# print("cipher: {}".format(cipher.decode('latin1')))
+# decrypted_plaintext = brute_force_aes(cipher)
+# print(f"C4ak3D: {decrypted_plaintext}")
+# m = aes_decrypt(cipher, k)
+# print(f"m: {m}")
+
+r1="\x01\x04\x03\x09"  # dawn help
+r2 = "\x14\x20\x03\x12"
+c1="eetg"
+c2="iaoy"
+print(xor(c1, r2))
+print(xor(c2,r2))
+

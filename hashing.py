@@ -1,6 +1,6 @@
 import hashlib
 import string
-from itertools import combinations
+from itertools import permutations
 
 def hash_md5(input):
     secure_hash = hashlib.md5()
@@ -34,7 +34,7 @@ def simple_hash(s):
 
 def string_generator():
     for i in range(len(string.printable)):
-        for j in combinations(string.printable, i+1):
+        for j in permutations(string.printable, i+1):
             yield ''.join(j)
 
 
@@ -47,9 +47,26 @@ def find_collision_for_simple_hash(s):
     return "this can never happen"
 
 
+def weak_md5(s):
+    hash = hashlib.md5()
+    hash.update(s.encode('utf-8'))
+    return hash.hexdigest()[:5]  # return only first 40 bits
+
+def find_collision_in_any_two_string():
+    hash_collector = {}
+    for item in string_generator():
+        if weak_md5(item) in hash_collector:
+            return item, hash_collector[weak_md5(item)]
+        else:
+            hash_collector[weak_md5(item)] = item
+
+    return "this can never happen"
+
+
 key_str = "Hello, world!"
 print(hash_md5(key_str))
 print(hash_sha1(key_str))
 print(hash_sha256(key_str))
 print(hash_sha3(key_str))
-print(find_collision_for_simple_hash('foo'))
+print(find_collision_for_simple_hash('sup'))
+print(find_collision_in_any_two_string())

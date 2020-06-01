@@ -30,6 +30,7 @@ def xor(m1, m2):
 
 
 def my_aes_encrypt(plaintext, k):
+    # On hindsight - this is not AES. this is just plain CBC
     iv = "asdfghjklzxcvbnm"
     ciphertext = iv
     prev_chunk = iv

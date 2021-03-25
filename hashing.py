@@ -39,9 +39,9 @@ def string_generator():
 
 
 def find_collision_for_simple_hash(s):
-    target = simple_hash(s)
+    target = simple_hash_2(s)
     for candidate in string_generator():
-        if (candidate != s) and (simple_hash(candidate) == target):
+        if (candidate != s) and (simple_hash_2(candidate) == target):
             return candidate
 
     return "this can never happen"
@@ -52,13 +52,19 @@ def weak_md5(s):
     hash.update(s.encode('utf-8'))
     return hash.hexdigest()[:5]  # return only first 40 bits
 
+def simple_hash_2(s):
+    result = 0
+    for c in s:
+        result = (result + ord(c)*3 + 17) % 791
+    return result
+
 def find_collision_in_any_two_string():
     hash_collector = {}
     for item in string_generator():
-        if weak_md5(item) in hash_collector:
-            return item, hash_collector[weak_md5(item)]
+        if simple_hash_2(item) in hash_collector:
+            return item, hash_collector[simple_hash_2(item)]
         else:
-            hash_collector[weak_md5(item)] = item
+            hash_collector[simple_hash_2(item)] = item
 
     return "this can never happen"
 
@@ -68,5 +74,5 @@ print(hash_md5(key_str))
 print(hash_sha1(key_str))
 print(hash_sha256(key_str))
 print(hash_sha3(key_str))
-print(find_collision_for_simple_hash('sup'))
+print(find_collision_for_simple_hash('hello'))
 print(find_collision_in_any_two_string())

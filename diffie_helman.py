@@ -1,16 +1,13 @@
 import random
 
-p = 283
-g = 47
-
-
-
+p = 17
+g = 14
 
 class Alice:
 
 
     def __init__(self):
-        self.a = random.randint(1, p)
+        self.a = 5
 
 
     def publish(self):
@@ -21,13 +18,11 @@ class Alice:
         return gb**self.a % p
 
 
-
-
 class Bob:
 
 
     def __init__(self):
-        self.b = random.randint(1, p)
+        self.b = 2
 
 
     def publish(self):
